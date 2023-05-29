@@ -1,6 +1,8 @@
 "use client"
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { fetchData } from "./actions";
+import { MyButton } from "@/components/MyButton";
 
 const testData = {
   stuff: "hi",
@@ -13,12 +15,17 @@ const testData2 = {
 }
 
 export default function Home() {
+  let [isPending, startTransition] = useTransition();
   const [outputData, setOutputData] = useState<any>(testData);
 
-  const fetchData = () => {
-    // TODO : fetch data from google sheets and set output data
+  const fetchButtonClick = () => {
+    startTransition(async () => {
+      console.log("server clicked!");
 
-    setOutputData(testData2);
+      // const response = await fetchData(); // TODO
+
+      setOutputData(testData2);
+    })
   }
 
   return (
@@ -26,13 +33,7 @@ export default function Home() {
       <h1>NextJS Google Sheets Test</h1>
 
       <div className="flex flex-col gap-4">
-        <button
-          className="bg-slate-500 px-4 py-2 rounded-lg w-fit"
-          onClick={fetchData}
-        >
-          Fetch
-        </button>
-
+        <MyButton onClick={fetchButtonClick} />
         <code>{JSON.stringify(outputData)}</code>
       </div>
 
